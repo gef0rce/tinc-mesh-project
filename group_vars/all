@@ -1,0 +1,10 @@
+---
+#Global VPN Config
+netname: mesh
+port: 655
+rsa_key_size: 1024
+public_ip: ansible_eth0.ipv4.address
+vpn_interface: tun0
+vpn_netmask: 255.255.255.0
+vpn_subnet_cidr_netmask: 32
+tinc_version:

@@ -1,0 +1,97 @@
+---
+# tinc configuration section START
+# Create tinc directory structure
+
+
+- name: change hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: change hosts
+  template: >
+    src=hosts.j2
+    dest=/etc/hosts
+
+- name: delete any existing directories
+  shell: /bin/rm -rf /etc/tinc
+
+- name: stop tinc processes
+  shell: tincd -n mesh -k
+
+
+- name: ensure tinc netname directory exists
+  file: >
+    path=/etc/tinc/{{ netname }}/hosts
+    recurse=True
+    state=directory
+
+# Create nets.boot
+- name: create /etc/tinc/nets.boot file from template
+  template: >
+    src=nets.boot.j2
+    dest=/etc/tinc/nets.boot
+  notify:
+    - restart tinc
+
+# Create tinc.conf
+- name: create tinc.conf file
+  template: >
+    src=tinc.conf.j2
+    dest=/etc/tinc/{{ netname }}/tinc.conf
+  notify:
+   - reload tinc
+
+# Create tinc-up
+- name: create tinc-up file
+  template: >
+    src=tinc-up.j2
+    dest=/etc/tinc/{{ netname }}/tinc-up
+    mode=0755
+  notify:
+    - restart tinc
+
+# Create tinc-down
+- name: create tinc-down file
+  template: >
+    src=tinc-down.j2
+    dest=/etc/tinc/{{ netname }}/tinc-down
+    mode=0755
+  notify:
+    - restart tinc
+
+# Add Subnet information to host config file    
+#- name: ensure subnet ip address is properly set in tinc host file
+#  lineinfile: >
+#    dest=/etc/tinc/{{ netname }}/hosts/{{ inventory_hostname }}
+#    line="Subnet = {{ vpn_ip }}/{{ vpn_subnet_cidr_netmask }}"
+#    create=yes
+#  notify:
+#    - restart tinc
+
+# Add Address and Port information to host config file   
+- name: ensure tinc hosts file binds to physical ip address
+  lineinfile: >
+    dest=/etc/tinc/{{ netname }}/hosts/{{ inventory_hostname }}
+    line="Address = {{ ansible_eth0.ipv4.address }} {{ port }}"
+    create=yes
+  notify:
+    - restart tinc
+
+# Generate SSH Keys   
+- name: create tinc private key (and append public key to tincd hosts file)
+  shell: tincd -n {{ netname }} --generate-keys {{ rsa_key_size }}
+  args:
+    creates: /etc/tinc/{{ netname }}/rsa_key.priv
+
+- name: run handlers
+  meta: flush_handlers
+
+- name: ensure tinc is started
+  service: >
+    name=tinc
+    enabled=yes
+    state=started
+    pattern=tincd -n {{ netname }}
+  when: >
+    (ansible_distribution_release == "xenial")
+# tinc configuration section END

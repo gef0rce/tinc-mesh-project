@@ -1,0 +1,18 @@
+[tinc-nodes]
+#{NODE NAME} {VPN IP} {REAL IP} {ROOT USER}
+#srv_iaas vpn_ip=10.10.10.1
+file_server vpn_ip=10.10.10.2 ansible_ssh_host=file_server ansible_ssh_user=root
+raspberry_pi vpn_ip=10.10.10.3 ansible_ssh_host=raspberry_pi ansible_ssh_user=root
+node4 vpn_ip=10.10.10.4 ansible_ssh_host=167.25.79.2 ansible_ssh_user=root
+node5 vpn_ip=10.10.10.5 ansible_ssh_host=167.25.80.2 ansible_ssh_user=root
+node6 vpn_ip=10.10.10.6 ansible_ssh_host=167.25.81.2 ansible_ssh_user=root
+node7 vpn_ip=10.10.10.7 ansible_ssh_host=167.25.82.2 ansible_ssh_user=root
+
+[tinc-windows]
+srv_iaas
+file_server
+raspberry_pi
+node4
+node5
+node6
+node7

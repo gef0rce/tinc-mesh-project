@@ -1,0 +1,15 @@
+Name = {{ inventory_hostname }}
+AddressFamily = ipv4
+Interface = {{ vpn_interface }}
+Cipher = aes-256-cbc
+Digest = SHA512
+BindToAddress = {{ ansible_eth0.ipv4.address }}
+Forwarding = kernel
+logfile = /var/log/tinc..log
+TCPOnly = no
+Port = {{ port }}
+{% for hosts in ansible_play_hosts %}
+{% if inventory_hostname != hostvars[hosts]['inventory_hostname'] %}
+ConnectTo = {{ hostvars[hosts]['inventory_hostname'] }}
+{% endif %}
+{% endfor %}

@@ -1,0 +1,12 @@
+Name = {{ inventory_hostname }}
+AddressFamily = ipv4
+Interface = {{ vpn_interface }}
+BindToAddress = {{ ansible_eth0.ipv4.address }}
+Mode = switch
+Port = {{ port }}
+
+{% for hosts in ansible_play_hosts %}
+{% if inventory_hostname != hostvars[hosts]['inventory_hostname'] %}
+ConnectTo = {{ hostvars[hosts]['inventory_hostname'] }}
+{% endif %}
+{% endfor %}

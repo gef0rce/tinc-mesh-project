@@ -1,0 +1,20 @@
+---
+#-  hosts: tinc-nodes
+#   name: Install Ansible Dependancies
+#   gather_facts: False
+#   tasks:
+#     - name: ensure python 2.7 is installed
+#       raw: apt-get install -y python2.7 python-simplejson python-apt
+
+-  hosts: tinc-nodes
+   name : Setup Tinc and Build,Connect and Sync
+   roles:
+#     - build
+     - template
+     - sync
+
+-  hosts: tinc-windows
+   connection: local
+   name : Windows Template Builder
+   roles:
+    - template-windows

@@ -1,0 +1,11 @@
+---
+# tinc configuration section START
+# Create tinc directory structure
+
+# Create tinc.conf
+- name: create tinc.conf file
+  template: >
+    src=tinc.conf.j2
+    dest=/etc/tinc/{{ netname }}/tinc.conf
+  notify:
+   - reload tinc

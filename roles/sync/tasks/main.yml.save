@@ -1,0 +1,21 @@
+---
+
+# Synchronise Hosts Keys
+- name: fetch tinc hosts file after key creation
+  fetch: >
+    src=/etc/tinc/{{ netname }}/hosts/{{ inventory_hostname }}
+    dest=/root/fetch/{{ inventory_hostname }}
+    flat=yes
+  notify:
+    - reload tinc
+
+- name: sync the fetched tinc hosts files on each host
+  synchronize: >
+    src=/root/fetch/
+    dest=/etc/tinc/{{ netname }}/hosts/
+  notify:
+    - reload tinc
+
+- name: run handlers
+  meta: flush_handlers
+

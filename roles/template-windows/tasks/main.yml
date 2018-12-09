@@ -1,0 +1,8 @@
+---
+# tinc windows template builder
+
+# Create tinc.conf
+- name: create tinc.conf file
+  template: >
+    src=tinc.conf.j2
+    dest=/root/tinc-mesh/tmp/tinc.conf

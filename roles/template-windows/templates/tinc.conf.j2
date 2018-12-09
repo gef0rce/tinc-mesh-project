@@ -1,0 +1,11 @@
+Name = srv_iaas
+AddressFamily = ipv4
+Interface = {{ vpn_interface }}
+Cipher = aes-256-cbc
+Mode = switch
+Port = {{ port }}
+{% for hosts in ansible_play_hosts %}
+{% if inventory_hostname != 'srv_iaas' %}
+ConnectTo = {{ hostvars[hosts]['inventory_hostname'] }}
+{% endif %}
+{% endfor %}
